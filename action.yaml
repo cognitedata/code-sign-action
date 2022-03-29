@@ -1,0 +1,21 @@
+name: 'Sign binary'
+description: 'Sign a binary using a code signing certificate'
+inputs:
+  certificate:
+    description: 'The base64 encoded certificate'
+    required: true
+  certificate-password:
+    description: 'The password for the certificate'
+    required: true
+  path-to-binary:
+    description: 'The folder that contains the files to sign'
+    required: true
+  recursive:
+    description: 'Recursively search for supported files'
+    required: false
+outputs:
+  result:
+    description: 'Shows whether the signing was performed successfully'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
