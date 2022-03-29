@@ -2,7 +2,7 @@ on: push
 
 name: main
 jobs:
-  run_action:
+  main:
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -13,15 +13,15 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Run lint
-        run: npm run lint
-
       - name: Install dependencies
         run: npm ci
 
+      - name: Run lint
+        run: npm run lint
+
       - name: Rebuild the dist/ directory
         run: npm run prepare
-        
+
       - name: Compare the expected and actual dist/ directories
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
@@ -29,6 +29,7 @@ jobs:
             git diff
             exit 1
           fi
+        shell: cmd
         id: diff
 
       # If index.js was different than expected, upload the expected version as an artifact
@@ -37,24 +38,3 @@ jobs:
         with:
           name: dist
           path: dist/
-
-      - name: Copy libraries
-        shell: cmd
-        run: |
-          copy C:\Windows\System32\wmi.dll files
-          cd files
-          mkdir subdirectory
-          copy C:\Windows\System32\wmi.dll subdirectory
-      - name: Run the action with missing certificate
-        uses: ./
-        with:
-          certificate: '${{ secrets.MISSING_CERTIFICATE }}'
-          certificate-password: ''
-          path-to-binary: '.'
-      - name: Run the action
-        uses: ./
-        with:
-          certificate: '${{ secrets.CERTIFICATE }}'
-          certificate-password: ''
-          path-to-binary: '.'
-          recursive: true
