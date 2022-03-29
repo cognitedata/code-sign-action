@@ -10,6 +10,9 @@ jobs:
   run-action:
     runs-on: windows-2022
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Copy libraries
         shell: cmd
         run: |
