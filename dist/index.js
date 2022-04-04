@@ -1685,47 +1685,30 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(186);
-const {exec} = __nccwpck_require__(129);
+const util = __nccwpck_require__(669);
+const exec = util.promisify(__nccwpck_require__(129).exec);
 
-/** Sign binary
- * @param {string} certificate - The base64 encoded certificate.
- * @param {string} certificatePassword - The password for the certificate.
- * @param {string} pathToBinary - The folder that contains the files to sign.
- * @param {string} recursive - Recursively search for supported files.
-*/
-async function sign(certificate,
-    certificatePassword,
-    pathToBinary,
-    recursive=false) {
-  core.info(`Execute PS script to sign binary`);
+async function sign() {
+  const pathToBinary = core.getInput('path-to-binary');
+  const options = core.getInput('options');
 
-  exec('./sign.ps1',
-      [certificate, certificatePassword, pathToBinary, recursive],
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          core.setFailed(error.message);
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-      });
+  core.info(`Signing binary...`);
+  return await exec('.\\sign.ps1 ' + pathToBinary + ' ' + options, {'shell':'powershell.exe'});
 }
 
 async function run() {
   try {
-    const certificate = core.getInput('certificate');
-    const certificatePassword = core.getInput('certificate-password');
-    const pathToBinary = core.getInput('path-to-binary');
-    const recursive = core.getInput('recursive');
+    const { stdout, stderr } = await sign();
 
-    const {output} = await sign(certificate,
-        certificatePassword,
-        pathToBinary,
-        recursive);
-
-    core.setOutput('result', output);
+    if (stderr) {
+      console.error('stderr:', stderr);
+      throw new Error(stderr);
+    }
+    console.log(stdout);
+    core.setOutput('result', stdout);
   } catch (error) {
-    core.setFailed(error.message);
+    console.error('error:', error.message);
+    core.setFailed(`Action failed with error: ${error}`);
   }
 }
 

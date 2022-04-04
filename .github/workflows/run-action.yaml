@@ -11,27 +11,62 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          ref: test-action
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Rebuild the dist/ directory
+        run: npm run prepare
 
       - name: Copy libraries
         shell: cmd
         run: |
-          copy C:\Windows\System32\wmi.dll files
+          mkdir files
+          copy C:\Windows\System32\wmp.dll files
           cd files
           mkdir subdirectory
-          copy C:\Windows\System32\wmi.dll subdirectory
+          copy C:\Windows\System32\wmp.dll subdirectory
 
-      - name: Run the action with missing certificate
-        uses: ./
-        with:
-          certificate: '${{ secrets.MISSING_CERTIFICATE }}'
-          certificate-password: ''
-          path-to-binary: '.'
+      - name: Run a script
+        shell: pwsh
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |
+          .\\sign.ps1 "files\\wmp.dll"
+
+      - name: Run a script
+        shell: pwsh
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |
+          .\\sign.ps1 "files\\wmp.dll" -Recurse
 
       - name: Run the action
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
         uses: ./
         with:
-          certificate: '${{ secrets.CERTIFICATE }}'
-          certificate-password: '${{ secrets.CERTIFICATE_PASSWORD }}'
-          path-to-binary: 'files/wmi.dll'
-          recursive: false
+          path-to-binary: 'files\wmp.dll'
+
+      - name: Run the action
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        uses: ./
+        with:
+          path-to-binary: 'files'
+          options: '-Recurse'
