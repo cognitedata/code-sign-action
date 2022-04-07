@@ -10,63 +10,29 @@ jobs:
   run-action:
     runs-on: windows-2022
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: test-action
-
-      - name: Set Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Rebuild the dist/ directory
-        run: npm run prepare
-
       - name: Copy libraries
         shell: cmd
         run: |
+          dir
           mkdir files
           copy C:\Windows\System32\wmp.dll files
           cd files
           mkdir subdirectory
           copy C:\Windows\System32\wmp.dll subdirectory
 
-      - name: Run a script
-        shell: pwsh
+      - name: Run the action for a single binary
         env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-        run: |
-          .\\sign.ps1 "files\\wmp.dll"
-
-      - name: Run a script
-        shell: pwsh
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-        run: |
-          .\\sign.ps1 "files\\wmp.dll" -Recurse
-
-      - name: Run the action
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-        uses: ./
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
         with:
           path-to-binary: 'files\wmp.dll'
 
-      - name: Run the action
+      - name: Run the action for all binaries under a folder
         env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-        uses: ./
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
         with:
           path-to-binary: 'files'
           options: '-Recurse'

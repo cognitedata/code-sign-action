@@ -7,9 +7,8 @@ inputs:
   options:
     description: 'Use "-Recurse" to recursively search for files'
     required: false
-outputs:
-  result:
-    description: 'Shows whether the signing was performed successfully'
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+    - run: ${{ github.action_path }}/sign.ps1 ${{ inputs.path-to-binary }} ${{ inputs.options }}
+      shell: pwsh
