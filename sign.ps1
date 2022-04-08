@@ -1,34 +1,31 @@
 Param(
     [Parameter(Mandatory)]
-    [string]$Certificate, 
-    
-    [Parameter(Mandatory)]
-    [string]$CertificatePassword, 
-    
-    [Parameter(Mandatory)]
     [string]$PathToBinary, 
     
     [Parameter()]
-    [switch]$Recursive
+    [switch]$Recurse
 )
 
-Get-LocalUser
-
 Write-Output "Read certificate into a file"
-$Certificate | OutFile "C:\\Users\\?\\Documents\\cognite_code_signing.pfx"
+[IO.File]::WriteAllBytes("C:\\Users\\runneradmin\\Documents\\cognite_code_signing.pfx", [Convert]::FromBase64String($env:CERTIFICATE))
 
 Write-Output "Import code signing certificate to Local Cert Store"
-Import-PfxCertificate -FilePath "C:\\Users\\?\\Documents\\cognite_code_signing.pfx" -Password  (ConvertTo-SecureString -String $CertificatePassword -AsPlainText -Force)  -Cert "Cert:\\LocalMachine\\My"
-\$cert = (Get-ChildItem -Path "Cert:\\LocalMachine\\My" | Where-Object {\$_.Subject -Match "Cognite AS"})[0]
+Import-PfxCertificate -FilePath "C:\\Users\\runneradmin\\Documents\\cognite_code_signing.pfx" -Password  (ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText -Force)  -Cert "Cert:\\LocalMachine\\My"
+$cert = (Get-ChildItem -Path "Cert:\\LocalMachine\\My" -CodeSigningCert | Where-Object {$_.Subject -Match "Cognite AS"})[0]
 
-Write-Output "Sign binary"
-Set-AuthenticodeSignature -FilePath $PathToBinary -Certificate \$cert
+if ($Recurse) {
+    Write-Host "Sign all files in folder $PathToBinary"
+    Get-ChildItem -Path $PathToBinary -File -Recurse | % {
+        Write-Host $_.FullName
+        Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $cert
+    }
+}
+else {
+    Write-Output "Sign a single binary"
+    Set-AuthenticodeSignature -FilePath $PathToBinary -Certificate $cert
+}
 
 Write-Output "Remove code signing certificate from Local Cert Store"
-Get-ChildItem Cert:\\LocalMachine\\My | Where-Object {\$_.Subject -Match "Cognite AS"} | Remove-Item
+Get-ChildItem Cert:\\LocalMachine\\My | Where-Object {$_.Subject -Match "Cognite AS"} | Remove-Item
 
-
-# TODO: Handle files recursively
-if ($Recursive.IsPresent) {
-    Write-Host "Sign all files in folder"
-}
+Write-Output "Code signing completed" 

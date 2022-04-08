@@ -13,22 +13,26 @@ jobs:
       - name: Copy libraries
         shell: cmd
         run: |
-          copy C:\Windows\System32\wmi.dll files
+          dir
+          mkdir files
+          copy C:\Windows\System32\wmp.dll files
           cd files
           mkdir subdirectory
-          copy C:\Windows\System32\wmi.dll subdirectory
+          copy C:\Windows\System32\wmp.dll subdirectory
 
-      - name: Run the action with missing certificate
-        uses: ./
+      - name: Run the action for a single binary
+        env:
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
         with:
-          certificate: '${{ secrets.MISSING_CERTIFICATE }}'
-          certificate-password: ''
-          path-to-binary: '.'
+          path-to-binary: 'files\wmp.dll'
 
-      - name: Run the action
-        uses: ./
+      - name: Run the action for all binaries under a folder
+        env:
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
         with:
-          certificate: '${{ secrets.CERTIFICATE }}'
-          certificate-password: '${{ secrets.CERTIFICATE_PASSWORD }}'
-          path-to-binary: 'files/wmi.dll'
-          recursive: false
+          path-to-binary: 'files'
+          options: '-Recurse'
