@@ -1,10 +1,71 @@
 # code-sign-action
 
-This Action can be used to sign Windows binaries. It needs
+This Action can be used to sign Windows binaries. It has been tested on to run on `windows-2022` runners.
 
-- a code signing certificate and key in a PKCS #12 archive (.pfx file);
-- a key to decrypt the PKCS #12 archive.
+------------
 
-The recommended way of providing these inputs is to store them as Actions Secrets made available to this action.
+## Usage
 
-The action requires a Windows runner to run and it has been tested on `windows-2022` runners.
+### Environment
+
+- `CERTIFICATE`: Base64-encoded PKCS #12 archive (.pfx file).
+- `CERTIFICATE_PASSWORD`: Pass phrase to decode the .pfx file.
+
+### Inputs
+
+- `path-to-binary`: path to the file to be signed.
+
+#### Optional:
+|  Parameter   |                                         Description                                          |      Default       |
+| :----------: | :------------------------------------------------------------------------------------------: | :----------------: |
+|   options    |                   Use "-Recurse" to recursively search for and sign files                    |        null        |
+
+### Examples
+
+#### Sign one file
+
+```yaml
+name: run-action
+on:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  run-action:
+    runs-on: windows-2022
+    steps:
+      - name: Run the action for a single binary
+        env:
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
+        with:
+          path-to-binary: 'files\some_file.exe'
+```
+
+#### Sign multiple files
+
+```yaml
+name: run-action
+on:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  run-action:
+    runs-on: windows-2022
+    steps:
+      - name: Run the action for all binaries under a folder
+        env:
+          CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1
+        with:
+          path-to-binary: 'files'
+          options: '-Recurse'
+```
+
