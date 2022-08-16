@@ -1,6 +1,6 @@
 # code-sign-action
 
-This Action can be used to sign Windows binaries. It has been tested on to run on `windows-2022` runners.
+This Action can be used to sign Windows binaries. It has been tested on `windows-2022` runners.
 
 ------------
 
