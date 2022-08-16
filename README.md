@@ -25,7 +25,7 @@ This Action can be used to sign Windows binaries. It has been tested on to run o
 #### Sign one file
 
 ```yaml
-name: run-action
+name: codesign-example-single-file
 on:
   push:
     branches:
@@ -48,7 +48,7 @@ jobs:
 #### Sign multiple files
 
 ```yaml
-name: run-action
+name: codesign-example-multiple-files
 on:
   push:
     branches:
