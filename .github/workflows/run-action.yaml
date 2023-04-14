@@ -44,7 +44,7 @@ jobs:
         run: |
           ls
           mkdir files
-          touch files/test.dll
+          wget https://github.com/cognitedata/code-sign-action/raw/0dc0e0fff181f5c2147601d4402d6ce8d64e06ca/test.dll -O files/test.dll
           cd files
           mkdir subdirectory
           cp test.dll subdirectory
@@ -55,7 +55,7 @@ jobs:
           CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
         uses: cognitedata/code-sign-action/@sign-on-linux
         with:
-          path-to-binary: 'files\test.dll'
+          path-to-binary: 'files/test.dll'
 
       - name: Run the action for all binaries under a folder
         env:
