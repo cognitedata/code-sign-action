@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 
 echo -n "$CERTIFICATE" | base64 -w 0 --decode > ./cognite_code_signing.pfx
 
 
 osslver="$(openssl version)"
-if [[ "$osslver" == 3* ]]; then
+if [[ "$osslver" == "OpenSSL 3"* ]]; then
     # Convert the pkcs12 file into a compatible format by passing it through openssl...
     # Technically the sign tool is also based on openssl, but it doesn't let you set the "legacy" flag,
     # so we have to convert it using openssl first.
@@ -38,7 +39,7 @@ if [ $recurse = true ] ; then
         mv "$f.signed" "$f"
     done
 else
-    echo "Sign a single binary $CERTIFICATE_PASSWORD"
+    echo "Sign a single binary"
     osslsigncode sign -pkcs12 ./cognite_code_signing.pfx -pass "$CERTIFICATE_PASSWORD" \
         -t "http://timestamp.digicert.com" \
         -in "$file_path" -out "$file_path.signed"
