@@ -11,4 +11,10 @@ runs:
   using: 'composite'
   steps:
     - run: ${{ github.action_path }}/sign.ps1 ${{ inputs.path-to-binary }} ${{ inputs.options }}
+      if: runner.os == 'Windows'
       shell: pwsh
+    - run: |
+        sudo apt install osslsigncode
+        ${{ github.action_path }}/sign.sh ${{ inputs.path-to-binary }} ${{ inputs.options }}
+      if: runner.os == 'Linux'
+      shell: bash
