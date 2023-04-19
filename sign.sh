@@ -30,20 +30,21 @@ for var in "$@"; do
     fi
 done
 
+sign_binary() {
+    osslsigncode sign -pkcs12 ./cognite_code_signing.pfx -pass "$CERTIFICATE_PASSWORD" \
+        -t "http://timestamp.digicert.com" \
+        -in "$1" -out "$1.signed"
+    mv "$1.signed" "$1"
+}
+
 if [ $recurse = true ] ; then
     echo "Sign all files in folder $file_path"
     for f in $(find $file_path -type f); do
-        osslsigncode sign -pkcs12 ./cognite_code_signing.pfx -pass "$CERTIFICATE_PASSWORD" \
-            -t "http://timestamp.digicert.com" \
-            -in "$f" -out "$f.signed"
-        mv "$f.signed" "$f"
+        sign_binary $f
     done
 else
     echo "Sign a single binary"
-    osslsigncode sign -pkcs12 ./cognite_code_signing.pfx -pass "$CERTIFICATE_PASSWORD" \
-        -t "http://timestamp.digicert.com" \
-        -in "$file_path" -out "$file_path.signed"
-    mv "$file_path.signed" "$file_path"
+    sign_binary $file_path
 fi
 
 rm ./cognite_code_signing.pfx
