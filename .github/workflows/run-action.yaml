@@ -53,7 +53,7 @@ jobs:
         env:
           CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
-        uses: cognitedata/code-sign-action/@sign-on-linux
+        uses: cognitedata/code-sign-action/@v1
         with:
           path-to-binary: 'files/test.dll'
 
@@ -61,7 +61,7 @@ jobs:
         env:
           CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
-        uses: cognitedata/code-sign-action/@sign-on-linux
+        uses: cognitedata/code-sign-action/@v1
         with:
           path-to-binary: 'files'
           options: '-Recurse'
