@@ -24,7 +24,7 @@ jobs:
         env:
           CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
-        uses: cognitedata/code-sign-action/@v1.1
+        uses: cognitedata/code-sign-action/@v1.12
         with:
           path-to-binary: 'files\wmp.dll'
 
@@ -32,7 +32,7 @@ jobs:
         env:
           CERTIFICATE: ${{ secrets.CODE_SIGNING_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CERTIFICATE_PASSWORD }}
-        uses: cognitedata/code-sign-action/@v1
+        uses: cognitedata/code-sign-action/@v1.12
         with:
           path-to-binary: 'files'
           options: '-Recurse'

@@ -11,8 +11,7 @@ Write-Output "Read certificate into a file"
 
 Write-Output "Import code signing certificate to Local Cert Store"
 Import-PfxCertificate -FilePath "C:\\Users\\runneradmin\\Documents\\cognite_code_signing.pfx" -Password  (ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText -Force)  -Cert "Cert:\\LocalMachine\\My"
-Get-ChildItem -Path "Cert:\\LocalMachine\\My"
-$cert = (Get-ChildItem -Path "Cert:\\LocalMachine\\My" -CodeSigningCert | Where-Object {$_.Subject -Match "Cognite AS"})[0]
+$cert = (Get-ChildItem -Path "Cert:\\LocalMachine\\My")[0]
 
 if ($Recurse) {
     Write-Host "Sign all files in folder $PathToBinary"
