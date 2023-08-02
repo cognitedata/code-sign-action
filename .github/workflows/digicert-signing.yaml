@@ -44,15 +44,15 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{secrets.SM_CLIENT_CERT_PASSWORD}}
           SM_CLIENT_CERT_FILE: ${{secrets.SM_CLIENT_CERT_FILE}}
 
-#      - name: Setup SSM KSP on windows latest
-#        run: |
+      - name: Sync certificate
+        run: |
+           smctl.exe windows certsync --keypair-alias="key_464138416"
 #          smksp_registrar.exe list
 #          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
 #          smksp_cert_sync.exe
 #          smctl.exe healthcheck
 #          smctl.exe certificate list
 #          smctl.exe keypair ls
-#          smctl.exe windows certsync --keypair-alias="key_464138416"
 #          smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'files\wmp.dll'
 #          smctl.exe sign verify --input 'files\wmp.dll'
 #        shell: cmd
