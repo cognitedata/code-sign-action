@@ -12,6 +12,7 @@ runs:
   steps:
     - name: Setup Certificate
       run: |
+        mkdir /d
         chmod +w /d
         echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode | install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
       shell: bash
