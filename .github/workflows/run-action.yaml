@@ -10,15 +10,18 @@ jobs:
   run-action:
     runs-on: windows-2022
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Copy libraries
         shell: cmd
         run: |
           dir
           mkdir files
-          copy C:\Windows\System32\wmp.dll files
+          copy test.dll files
           cd files
           mkdir subdirectory
-          copy C:\Windows\System32\wmp.dll subdirectory
+          copy test.dll subdirectory
 
       - name: Run the action for a single binary
         env:
@@ -41,13 +44,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Copy libraries
+        shell: cmd
         run: |
-          ls
+          dir
           mkdir files
-          wget https://github.com/cognitedata/code-sign-action/raw/0dc0e0fff181f5c2147601d4402d6ce8d64e06ca/test.dll -O files/test.dll
+          copy test.dll files
           cd files
           mkdir subdirectory
-          cp test.dll subdirectory
+          copy test.dll subdirectory
 
       - name: Run the action for a single binary
         env:

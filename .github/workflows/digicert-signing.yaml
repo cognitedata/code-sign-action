@@ -15,10 +15,10 @@ jobs:
         run: |
           dir
           mkdir files
-          copy C:\Windows\System32\wmp.dll files\test.dll
+          copy test.dll files
           cd files
           mkdir subdirectory
-          copy C:\Windows\System32\wmp.dll subdirectory\test.dll
+          copy test.dll subdirectory
 
       - name: Setup Certificate
         run: |
@@ -29,10 +29,10 @@ jobs:
         id: variables
         run: |          
           echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
-          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
+#          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
-          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
+#          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+#          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
           echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
           echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
           echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
@@ -47,10 +47,10 @@ jobs:
 
       - name: Signing with smctl
         run: |
-          smctl.exe healthcheck
-          smctl.exe certificate list
-          smctl.exe keypair ls 
-          smctl.exe windows certsync --keypair-alias="key_464138416"
+#          smctl.exe healthcheck
+#          smctl.exe certificate list
+#          smctl.exe keypair ls
+#          smctl.exe windows certsync --keypair-alias="key_464138416"
           smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'files\test.dll'
           smctl.exe sign verify --input 'files\test.dll'
 #          smksp_registrar.exe list
