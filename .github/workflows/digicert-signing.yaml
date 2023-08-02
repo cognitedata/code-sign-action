@@ -47,6 +47,7 @@ jobs:
       - name: Sync certificate
         run: |
            smctl.exe windows certsync --keypair-alias="key_464138416"
+        shell: cmd
 #          smksp_registrar.exe list
 #          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
 #          smksp_cert_sync.exe
@@ -55,7 +56,6 @@ jobs:
 #          smctl.exe keypair ls
 #          smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'files\wmp.dll'
 #          smctl.exe sign verify --input 'files\wmp.dll'
-#        shell: cmd
 
       - name: Signing using SignTool
         run: |
