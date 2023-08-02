@@ -56,7 +56,6 @@ jobs:
 
       - name: Signing using smctl
         run: |
-          smctl.exe windows certsync --keypair-alias='key_464138416'
           smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'files\wmp.dll'
           smctl.exe sign verify --input 'files\wmp.dll'
 
