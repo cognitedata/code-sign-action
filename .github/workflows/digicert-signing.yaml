@@ -45,7 +45,8 @@ jobs:
           SM_CLIENT_CERT_FILE: ${{secrets.SM_CLIENT_CERT_FILE}}
 
       - name: Sync certificate
-        env: GITHUB_WORKSPACE=${{ github.workspace }}
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           smctl.exe windows certsync --keypair-alias="key_464138416"
           smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "$GITHUB_WORKSPACE\files\wmp.dll"
