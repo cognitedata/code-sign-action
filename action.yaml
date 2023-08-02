@@ -10,11 +10,43 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: ${{ github.action_path }}/sign.ps1 ${{ inputs.path-to-binary }} ${{ inputs.options }}
-      if: runner.os == 'Windows'
-      shell: pwsh
-    - run: |
-        sudo apt install osslsigncode
-        ${{ github.action_path }}/sign.sh ${{ inputs.path-to-binary }} ${{ inputs.options }}
-      if: runner.os == 'Linux'
+    - name: Setup Certificate
+      run: |
+        echo "${{secrets.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+      shell: bash
+
+    - name: Set variables
+      id: variables
+      run: |
+        echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
+        echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
+        echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
+        echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
+        echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Code signing with Secure Software Manager
+      uses: digicert/ssm-code-signing@v0.0.2
+      env:
+        SM_API_KEY: ${{ env.SM_API_KEY }}
+        SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
+        SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
+
+#    - run: ${{ github.action_path }}/sign.ps1 ${{ inputs.path-to-binary }} ${{ inputs.options }}
+#      if: runner.os == 'Windows'
+#      shell: pwsh
+#
+#    - run: |
+#        sudo apt install osslsigncode
+#        ${{ github.action_path }}/sign.sh ${{ inputs.path-to-binary }} ${{ inputs.options }}
+#      if: runner.os == 'Linux'
+#      shell: bash
+
+    - name: Sign with smctl
+      env:
+        GITHUB_WORKSPACE: ${{ github.workspace }}
+      run: |
+        smctl windows certsync --keypair-alias="key_464138416"
+        smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
+        smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
       shell: bash
