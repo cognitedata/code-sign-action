@@ -44,10 +44,7 @@ jobs:
         run: |
           curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download?account_id=fb0b6868-dfb5-4cf0-a33b-3e7b852a9b62 -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
           msiexec /i Keylockertools-windows-x64.msi /quiet /qn
-          smksp_registrar.exe list
-          smctl.exe keypair ls
           C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
-          smksp_cert_sync.exe
         shell: cmd
 
       - name: Signing using Signtool
