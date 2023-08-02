@@ -40,12 +40,19 @@ jobs:
           echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
         shell: bash
 
-      - name: Setup SSM KSP on windows latest
-        run: |
-          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download?account_id=fb0b6868-dfb5-4cf0-a33b-3e7b852a9b62 -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
-          msiexec /i Keylockertools-windows-x64.msi /quiet /qn
-          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
-        shell: cmd
+      - name: Code signing with Secure Software Manager
+        uses: digicert/ssm-code-signing@latest-version
+        env:
+          SM_API_KEY: ${{secrets.SM_API_KEY}}
+          SM_CLIENT_CERT_PASSWORD: ${{secrets.SM_CLIENT_CERT_PASSWORD}}
+          SM_CLIENT_CERT_FILE: ${{secrets.SM_CLIENT_CERT_FILE}}
+
+#      - name: Setup SSM KSP on windows latest
+#        run: |
+#          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download?account_id=fb0b6868-dfb5-4cf0-a33b-3e7b852a9b62 -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
+#          msiexec /i Keylockertools-windows-x64.msi /quiet /qn
+#          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+#        shell: cmd
 
       - name: Signing using Signtool
         run: |          
