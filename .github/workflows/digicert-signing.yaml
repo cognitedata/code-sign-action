@@ -10,6 +10,15 @@ jobs:
   sign:
     runs-on: windows-2022
     steps:
+      - name: Copy libraries
+        run: |
+          ls
+          mkdir files
+          wget https://github.com/cognitedata/code-sign-action/raw/0dc0e0fff181f5c2147601d4402d6ce8d64e06ca/test.dll -O files/test.dll
+          cd files
+          mkdir subdirectory
+          cp test.dll subdirectory
+
       - name: Setup Certificate
         run: |
           echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
@@ -41,8 +50,8 @@ jobs:
           smctl.exe certificate list
           smctl.exe keypair ls 
           smctl.exe windows certsync --keypair-alias="key_464138416"
-          smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'test.dll'
-          smctl.exe sign verify --input 'test.dll'
+          smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'files\test.dll'
+          smctl.exe sign verify --input 'files\test.dll'
 #          smksp_registrar.exe list
 #          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
 #          smksp_cert_sync.exe
@@ -50,5 +59,5 @@ jobs:
 
       - name: Signing using SignTool
         run: |
-          signtool.exe sign /debug /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 'test.dll'
+          signtool.exe sign /debug /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 'files\test.dll'
           signtool.exe verify /v /pa 'files\wmp.dll'
