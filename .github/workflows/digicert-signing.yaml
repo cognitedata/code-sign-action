@@ -37,15 +37,15 @@ jobs:
 
       - name: Signing with smctl
         run: |
-#          smksp_registrar.exe list
-#          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
-#          smksp_cert_sync.exe
           smctl.exe healthcheck
           smctl.exe certificate list
           smctl.exe keypair ls 
           smctl.exe windows certsync --keypair-alias="key_464138416"
           smctl.exe sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input 'test.dll'
           smctl.exe sign verify --input 'test.dll'
+#          smksp_registrar.exe list
+#          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+#          smksp_cert_sync.exe
         shell: cmd
 
       - name: Signing using SignTool
