@@ -52,7 +52,7 @@ runs:
       run: |
         smctl windows certsync --keypair-alias="key_464138416"
         smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
-        smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
+        smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
       if: runner.os == 'Windows'
       shell: bash
 
@@ -60,8 +60,8 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
-         smctl cert save --keypair-alias="key_464138416" --out "${{ env.GITHUB_WORKSPACE }}"
-         smctl sign --keypair-alias="key_464138416" --certificate "${{ env.GITHUB_WORKSPACE }}/cert_464138416.pem" --input "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}"
-         smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/files/test.dll"
+        smctl cert save --keypair-alias="key_464138416" --out "${{ env.GITHUB_WORKSPACE }}"
+        osslsigncode sign -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module /root/smpkcs11.so -certs "${{ env.GITHUB_WORKSPACE }}/cert_464138416.pem" -key 'pkcs11:object=key_464138416;type=private' -in "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}" -out "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}" -h sha256 -t http://timestamp.digicert.com
+        osslsigncode verify -in "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}"
       if: runner.os == 'Linux'
       shell: bash
