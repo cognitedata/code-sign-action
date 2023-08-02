@@ -15,10 +15,10 @@ jobs:
         run: |
           dir
           mkdir files
-          copy test.dll files
+          copy C:\Windows\System32\wmp.dll files
           cd files
           mkdir subdirectory
-          copy test.dll subdirectory
+          copy C:\Windows\System32\wmp.dll subdirectory
 
       - name: Setup Certificate
         run: |
