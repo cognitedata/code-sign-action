@@ -19,6 +19,7 @@ jobs:
           cd files
           mkdir subdirectory
           copy C:\Windows\System32\wmp.dll subdirectory
+          
       - name: Setup Certificate
         run: |
           echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
@@ -32,9 +33,6 @@ jobs:
           echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
           echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
-          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
-          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
-          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
         shell: bash
 
       - name: Code signing with Secure Software Manager
@@ -44,7 +42,7 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{secrets.SM_CLIENT_CERT_PASSWORD}}
           SM_CLIENT_CERT_FILE: ${{secrets.SM_CLIENT_CERT_FILE}}
 
-      - name: Sync certificate
+      - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
@@ -52,8 +50,3 @@ jobs:
           smctl sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
           smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
         shell: cmd
-
-      - name: Signing using SignTool
-        run: |
-          signtool sign /debug /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 'files\wmp.dll'
-          signtool verify /v /pa 'files\wmp.dll'
