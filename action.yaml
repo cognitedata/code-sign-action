@@ -49,5 +49,4 @@ runs:
         smctl cert save --keypair-alias="key_464138416"
         smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
         smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\files\wmp.dll"
-#        smctl windows certsync --keypair-alias="key_464138416"
       shell: bash
