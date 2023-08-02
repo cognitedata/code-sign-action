@@ -60,6 +60,7 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
+        sudo apt install osslsigncode
         smctl cert save --keypair-alias="key_464138416" --out "${{ env.GITHUB_WORKSPACE }}"
         osslsigncode sign -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module /root/smpkcs11.so -certs "${{ env.GITHUB_WORKSPACE }}/cert_464138416.pem" -key 'pkcs11:object=key_464138416;type=private' -in "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}" -out "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}" -h sha256 -t http://timestamp.digicert.com
         osslsigncode verify -in "${{ env.GITHUB_WORKSPACE }}/${{ inputs.path-to-binary }}"
