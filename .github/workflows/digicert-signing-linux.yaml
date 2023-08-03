@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll" --tool="osslsigncode"
+          smctl sign -v --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll" --tool="osslsigncode"
         shell: bash
 
         # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
