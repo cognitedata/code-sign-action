@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --keypair-alias key_464138416 --certificate "${{ secrets.SM_CLIENT_CERT_FILE }}" --input "${{ env.GITHUB_WORKSPACE }}/test.dll" --tool osslsigncode
+          smctl sign --keypair-alias key_464138416 --certificate "${{ env.SM_CLIENT_CERT_FILE }}" --input "${{ env.GITHUB_WORKSPACE }}/test.dll" --tool osslsigncode
         shell: bash
 
       - name: Verify with smctl
