@@ -30,11 +30,11 @@ jobs:
 
       - name: Install third-party required tools
         run: |
-          sudo apt install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
+          sudo apt-get install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
 
-      # - name: locate file
-      #   run: |
-      #     sudo find / -name "libpkcs11.so"
+      - name: locate file
+        run: |
+          sudo find / -name "libpkcs11.so"
 
       - name: Code signing with Secure Software Manager
         uses: digicert/ssm-code-signing@v0.0.2
