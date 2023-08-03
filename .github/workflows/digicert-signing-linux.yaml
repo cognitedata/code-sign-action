@@ -25,6 +25,7 @@ jobs:
           echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_FILE=/d/cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Code signing with Secure Software Manager
@@ -41,7 +42,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --fingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "test.dll"
+          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input README.md
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
@@ -51,5 +52,5 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input "test.dll"
+          smctl sign verify --input README.md
         shell: bash
