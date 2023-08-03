@@ -1,0 +1,44 @@
+name: digicert-signing-linux
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+  sign-with-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Certificate
+        run: |
+          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+        shell: bash
+
+      - name: Set variables
+        id: variables
+        run: |
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_FILE=/d/cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: Code signing with Secure Software Manager
+        uses: digicert/ssm-code-signing@v0.0.2
+        env:
+          SM_API_KEY: ${{ secrets.SM_API_KEY }}
+          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
+          SM_CLIENT_CERT_FILE: ${{ secrets.SM_CLIENT_CERT_FILE }}
+
+      - name: Sign with smctl
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          sudo apt install osslsigncode
+          smctl sign --keypair-alias key_464138416 --certificate ${{ secrets.SM_CLIENT_CERT_FILE }} --input "${{ env.GITHUB_WORKSPACE }}/test.dll" --tool osslsigncode
+          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/test.dll"
+        shell: bash
