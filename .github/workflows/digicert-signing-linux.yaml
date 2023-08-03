@@ -71,5 +71,6 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/test.dll"
+          sudo apt-get install mono-devel
+          chktrust "${{ env.GITHUB_WORKSPACE }}/test.dll"
         shell: bash
