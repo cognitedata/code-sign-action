@@ -15,7 +15,7 @@ jobs:
 
       - name: Setup Certificate
         run: |
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
         shell: bash
 
       - name: Set variables
