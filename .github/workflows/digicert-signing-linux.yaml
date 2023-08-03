@@ -39,10 +39,11 @@ jobs:
         run: |
           sudo apt-get install -y osslsigncode
 
-      # - name: locate file
-      #   run: |
-      #     sudo find / -name "*libpkcs11.so"
-      #   shell: bash
+      - name: locate file
+        run: |
+          ls -a /tmp/DigiCert One Signing Manager Tools/smtools-linux-x64
+        shell: bash
+
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
