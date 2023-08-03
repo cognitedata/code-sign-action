@@ -56,7 +56,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl keypair list
+          jsign --keystore "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --storepass NONE --storetype PKCS11 --alias key_464138416 test.dll
         shell: bash
 
         # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
