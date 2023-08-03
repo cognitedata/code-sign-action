@@ -49,7 +49,7 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-          smctl sign -v --keypair-alias="key_464138416" --certificate /home/runner/work/code-sign-action/code-sign-action/cert.pem --config-file "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --input /home/runner/work/code-sign-action/code-sign-action/test.dll --tool jsign
+          smctl sign -v --keypair-alias="key_464138416" --certificate /home/runner/work/code-sign-action/code-sign-action/cert.pem --config-file "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --input /home/runner/work/code-sign-action/code-sign-action/test.dll --tool="jsign"
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
