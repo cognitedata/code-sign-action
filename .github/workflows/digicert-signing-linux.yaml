@@ -34,16 +34,21 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ secrets.SM_CLIENT_CERT_FILE }}
 
-      - name: Install third-party signing tool
+      # - name: Install third-party signing tool
+      #   run: |
+      #     sudo apt-get install -y osslsigncode
+
+      - name: Output files in folder
         run: |
-          sudo apt-get install -y osslsigncode
+          ls -a
+        shell: bash
 
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
-          smctl sign --keypair-alias key_464138416 --certificate "${{ env.GITHUB_WORKSPACE }}/code-sign-cert" --input "${{ env.GITHUB_WORKSPACE }}/test.dll" --tool osslsigncode
+          smctl sign --keypair-alias="key_464138416" --certificate "${{ env.GITHUB_WORKSPACE }}/code-sign-cert" --input "${{ env.GITHUB_WORKSPACE }}/test.dll" --tool osslsigncode
         shell: bash
 
       - name: Verify with smctl
