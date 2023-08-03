@@ -41,7 +41,7 @@ jobs:
 
       - name: locate file
         run: |
-          ls -a /tmp/DigiCert One Signing Manager Tools/smtools-linux-x64
+          sudo ls -a "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64"
         shell: bash
 
       - name: Sign with smctl
@@ -49,7 +49,7 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-          osslsigncode sign -pkcs11engine /snap/core20/1974/usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs cert.pem -key 'pkcs11:object=key_464138416;type=private' -in test.dll -out test.dll -h sha256 -t http://timestamp.digicert.com
+          osslsigncode sign -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs cert.pem -key 'pkcs11:object=key_464138416;type=private' -in test.dll -out test.dll -h sha256 -t http://timestamp.digicert.com
           osslsigncode verify -in test.dll
         shell: bash
 
