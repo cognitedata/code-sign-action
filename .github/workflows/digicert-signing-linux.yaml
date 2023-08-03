@@ -35,18 +35,17 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ secrets.SM_CLIENT_CERT_FILE }}
 
-      - name: Install third-party signing tool
-        run: |
-          sudo apt-get install -y osslsigncode
-
+      # - name: Install third-party signing tool
+      #   run: |
+      #     sudo apt-get install -y osslsigncode
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           sudo apt install osslsigncode
-          smctl cert save --keypair-alias="key_464138416" --out "${{ env.GITHUB_WORKSPACE }}"
-          osslsigncode sign -pkcs11engine "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -pkcs11module /root/smpkcs11.so -certs "${{ env.GITHUB_WORKSPACE }}/cert_464138416.pem" -key 'pkcs11:object=key_464138416;type=private' -in "${{ env.GITHUB_WORKSPACE }}/test.dll" -out "${{ env.GITHUB_WORKSPACE }}/test.dll" -h sha256 -t http://timestamp.digicert.com
-          osslsigncode verify -in "${{ env.GITHUB_WORKSPACE }}/test.dll"
+          smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
+          osslsigncode sign -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module /root/smpkcs11.so -certs cert.pem -key 'pkcs11:object=key_464138416;type=private' -in test.dll -out test.dll -h sha256 -t http://timestamp.digicert.com
+          osslsigncode verify -in test.dll
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
