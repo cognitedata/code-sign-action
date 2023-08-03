@@ -35,20 +35,18 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ secrets.SM_CLIENT_CERT_FILE }}
 
-      # - name: Install third-party signing tool
-      #   run: |
-      #     sudo apt-get install -y osslsigncode
-
-      - name: Copy libraries
+      - name: Install third-party signing tool
         run: |
-          mkdir files
-          cp /bin/curl files
+          sudo apt-get install -y osslsigncode
 
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "${{ env.GITHUB_WORKSPACE }}/files/curl"
+          sudo apt install osslsigncode
+          smctl cert save --keypair-alias="key_464138416" --out "${{ env.GITHUB_WORKSPACE }}"
+          osslsigncode sign -pkcs11engine "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -pkcs11module /root/smpkcs11.so -certs "${{ env.GITHUB_WORKSPACE }}/cert_464138416.pem" -key 'pkcs11:object=key_464138416;type=private' -in "${{ env.GITHUB_WORKSPACE }}/test.dll" -out "${{ env.GITHUB_WORKSPACE }}/test.dll" -h sha256 -t http://timestamp.digicert.com
+          osslsigncode verify -in "${{ env.GITHUB_WORKSPACE }}/test.dll"
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
@@ -58,5 +56,5 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/files/curl"
+          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/test.dll"
         shell: bash
