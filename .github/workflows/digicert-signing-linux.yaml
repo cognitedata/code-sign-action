@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input README.md
+          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "${{ env.GITHUB_WORKSPACE }}/action.yaml"
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
@@ -52,5 +52,5 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input README.md
+          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/action.yaml"
         shell: bash
