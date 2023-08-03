@@ -29,8 +29,8 @@ jobs:
 
       - name: Install third-party required tools
         run: |
-          wget https://github.com/ebourg/jsign/releases/download/4.0/jsign_4.0_all.deb
-          sudo dpkg --install jsign_4.0_all.deb
+          curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
+          sudo dpkg --install jsign_3.1_all.deb
 
       # sudo apt-get install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
 
@@ -49,8 +49,7 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-          smctl sign -v --keypair-alias="key_464138416" --certificate /home/runner/work/code-sign-action/code-sign-action/cert.pem --input "test.dll" --tool jsign
+          smctl healthcheck
         shell: bash
 
         # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
