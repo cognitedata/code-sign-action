@@ -38,11 +38,17 @@ jobs:
       # - name: Install third-party signing tool
       #   run: |
       #     sudo apt-get install -y osslsigncode
+
+      - name: Copy libraries
+        run: |
+          mkdir files
+          cp /bin/curl files
+
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "${{ env.GITHUB_WORKSPACE }}/action.yaml"
+          smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "${{ env.GITHUB_WORKSPACE }}/files/curl"
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
@@ -52,5 +58,5 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/action.yaml"
+          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}/files/curl"
         shell: bash
