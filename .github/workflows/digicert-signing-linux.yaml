@@ -45,7 +45,7 @@ jobs:
         run: |
           export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
           smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-          smctl sign -v --keypair-alias="key_464138416" --certificate /home/runner/work/code-sign-action/code-sign-action/cert.pem --input "test.dll"
+          smctl sign -v --keypair-alias="key_464138416" --certificate /home/runner/work/code-sign-action/code-sign-action/cert.pem --input "test.dll" --tool="osslsigncode"
         shell: bash
 
         # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
