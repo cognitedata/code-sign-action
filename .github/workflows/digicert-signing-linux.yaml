@@ -47,7 +47,7 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-          OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf" osslsigncode sign -v -pkcs11engine "/usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so" -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -out "test.dll" -h sha256 -t http://timestamp.digicert.com
+          OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf" osslsigncode sign -v -pkcs11engine "/usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so" -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -h sha256 -t http://timestamp.digicert.com
         shell: bash
 
         # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
