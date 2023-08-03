@@ -32,6 +32,7 @@ jobs:
         run: |
           curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
           sudo dpkg --install jsign_3.1_all.deb
+          sudo apt-get install -y osslsigncode
         shell: bash
 
       # sudo apt-get install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
@@ -74,5 +75,5 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign verify --input "test.dll"
+          osslsigncode verify -in "test.dll"
         shell: bash
