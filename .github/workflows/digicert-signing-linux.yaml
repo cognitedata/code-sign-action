@@ -8,7 +8,7 @@ on:
 
 jobs:
   sign-with-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
 
       - name: Install third-party required tools
         run: |
-          sudo apt install -y openssl=1.1.1f libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
+          sudo apt install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
 
       # - name: locate file
       #   run: |
