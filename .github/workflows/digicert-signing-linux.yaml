@@ -32,6 +32,10 @@ jobs:
         run: |
           sudo apt install -y openssl libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
 
+      - name: locate file
+        run: |
+          sudo find / -name "libpkcs11.so"
+
       - name: Code signing with Secure Software Manager
         uses: digicert/ssm-code-signing@v0.0.2
         env:
