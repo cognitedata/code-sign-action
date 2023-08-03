@@ -25,12 +25,14 @@ jobs:
           echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_FILE=/d/cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64" >> $GITHUB_PATH
         shell: bash
 
       - name: Install third-party required tools
         run: |
           curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
           sudo dpkg --install jsign_3.1_all.deb
+        shell: bash
 
       # sudo apt-get install -y openssl=1.1.1f-1ubuntu2.19 libengine-pkcs11-openssl gnutls-bin xxd osslsigncode
 
@@ -45,11 +47,16 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ secrets.SM_CLIENT_CERT_FILE }}
 
+      - name: Set PKCS11 config
+        run: |
+          echo "PKCS11_CONFIG=/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" >> "$GITHUB_ENV"
+        shell: bash
+
       - name: Sign with smctl
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl healthcheck
+          smctl keypair list
         shell: bash
 
         # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
