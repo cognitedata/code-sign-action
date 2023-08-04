@@ -51,7 +51,7 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
-        file_path="${{ inputs.path-to-binary }}"
+        file_path="${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
           if [ "${{ runner.os }}" == "Windows" ]
