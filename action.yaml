@@ -62,6 +62,6 @@ runs:
       run: |
         curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
         sudo dpkg --install jsign_3.1_all.deb
-        smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll"
+        smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll"
       if: runner.os == 'Linux'
       shell: bash
