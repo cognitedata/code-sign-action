@@ -27,9 +27,17 @@ runs:
       run: |
         echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
         echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
-        echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
         echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
         echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
+        if [ "${{ runner.os }}" == "Windows" ]
+        then
+          echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
+        elif [ "${{ runner.os }}" == "Linux" ]
+        then
+          echo "SM_CLIENT_CERT_FILE=/d/cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
+          echo "PKCS11_CONFIG=/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" >> "$GITHUB_ENV"
+          echo "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64" >> $GITHUB_PATH
+        fi
       shell: bash
 
     - name: Code signing with Secure Software Manager
