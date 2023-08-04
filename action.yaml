@@ -53,13 +53,19 @@ runs:
       run: |
         smctl windows certsync --keypair-alias="key_464138416"
         file_path="${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
-        for f in $(ls -R1 $file_path | while read l; do case $l in *:) d=${l%:};; "") d=;; *) echo "$d/$l";; esac; done); do
-          echo $f
+        if (Test-Path -Path $file_path -PathType Leaf) {
           smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "$f"
-          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\$f"
-        done
+          smctl sign verify --input "$f"
+        }
+        else {          
+          Get-ChildItem -Path $file_path -File -Recurse | % {
+            Write-Host $_.FullName
+            smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "$f"
+            smctl sign verify --input "$f"
+          }
+        }
       if: runner.os == 'Windows'
-      shell: bash
+      shell: powershell
 
 
     - name: Sign with smctl Linux
