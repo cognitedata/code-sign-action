@@ -12,9 +12,9 @@ runs:
   steps:
     - name: Setup Certificate
       run: |
-        if ${{ runner.os }} == 'Windows'; then 
+        if "${{ runner.os }}" == 'Windows'; then 
           echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12;
-        elif {{ runner.os }} == 'Linux'; then 
+        elif "${{ runner.os }}" == 'Linux'; then 
           echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12;
         fi
       shell: bash
