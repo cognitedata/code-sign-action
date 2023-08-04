@@ -53,6 +53,7 @@ runs:
       run: |
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
+          echo $f
           if [ "${{ runner.os }}" == "Windows" ]
           then
             smctl windows certsync --keypair-alias="key_464138416"
