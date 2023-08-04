@@ -47,7 +47,7 @@ runs:
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
         SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
 
-    - name: Sign with smctl
+    - name: Sign with smctl Windows
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
@@ -62,8 +62,7 @@ runs:
       shell: bash
 
 
-    - name: Sign with smctl
-      env:
+    - name: Sign with smctl Linux
       run: |
         curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
         sudo dpkg --install jsign_3.1_all.deb
