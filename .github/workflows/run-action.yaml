@@ -52,16 +52,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run the action for multiple binaries in a directory
-        env:
-          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-        uses: cognitedata/code-sign-action/@v1.276
-        with:
-          path-to-binary: "test/test.dll"
+#      - name: Run the action for multiple binaries in a directory
+#        env:
+#          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+#          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+#          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
+#          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+#          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+#        uses: cognitedata/code-sign-action/@v1.276
+#        with:
+#          path-to-binary: "test/test.dll"
 
       - name: Run the action for a single binary
         env:
