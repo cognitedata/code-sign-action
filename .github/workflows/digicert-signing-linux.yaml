@@ -53,23 +53,30 @@ jobs:
           echo "PKCS11_CONFIG=/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" >> "$GITHUB_ENV"
         shell: bash
 
-      - name: Sign with smctl
+      - name: Sign with osslcodesign
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll"
+          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll" --tool="osslsigncode"
         shell: bash
 
-        # I think this works
-        # jsign --keystore "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --storepass NONE --storetype PKCS11 --alias key_464138416 test.dll
+      # - name: Working version of signing with smctl Jsign
+      #   env:
+      #     GITHUB_WORKSPACE: ${{ github.workspace }}
+      #   run: |
+      #     smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" --input "test.dll"
+      #   shell: bash
 
-        # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
-        # smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
-        # osslsigncode sign -v -pkcs11engine "/usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so" -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -out "test.dll" -h sha256 -t http://timestamp.digicert.com
+      # I think this works
+      # jsign --keystore "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --storepass NONE --storetype PKCS11 --alias key_464138416 test.dll
 
-        # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
-        # smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "test.dll"
-        # osslsigncode sign -v -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -out "test.dll" -h sha256 -t http://timestamp.digicert.com
+      # export OPENSSL_CONF="${{ env.GITHUB_WORKSPACE }}/openssl-linux.conf"
+      # smctl cert save --keypair-alias="key_464138416" --name "cert.pem" --out "${{ env.GITHUB_WORKSPACE }}"
+      # osslsigncode sign -v -pkcs11engine "/usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so" -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -out "test.dll" -h sha256 -t http://timestamp.digicert.com
+
+      # smctl cert save --keypair-alias="key_464138416" --name "code-sign-cert" --out "${{ env.GITHUB_WORKSPACE }}"
+      # smctl sign --keypair-alias="key_464138416" --certificate "/d/cognite_code_signing_github_actions.p12" --input "test.dll"
+      # osslsigncode sign -v -pkcs11engine /usr/lib/x86_64-linux-gnu/engines-1.1/libpkcs11.so -pkcs11module "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/smpkcs11.so" -certs /home/runner/work/code-sign-action/code-sign-action/cert.pem -key 'pkcs11:object=key_464138416;type=private' -in "test.dll" -out "test.dll" -h sha256 -t http://timestamp.digicert.com
 
       - name: Verify with smctl
         env:
