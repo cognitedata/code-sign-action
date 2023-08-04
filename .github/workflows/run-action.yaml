@@ -10,15 +10,18 @@ jobs:
   run-action:
     runs-on: windows-2022
     steps:
-      - name: Copy libraries
-        shell: cmd
-        run: |
-          dir
-          mkdir files
-          copy C:\Windows\System32\wmp.dll files
-          cd files
-          mkdir subdirectory
-          copy C:\Windows\System32\wmp.dll subdirectory
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+#      - name: Copy libraries
+#        shell: cmd
+#        run: |
+#          dir
+#          mkdir files
+#          copy C:\Windows\System32\wmp.dll files
+#          cd files
+#          mkdir subdirectory
+#          copy C:\Windows\System32\wmp.dll subdirectory
 
       - name: Run the action for a single binary
         env:
@@ -27,21 +30,21 @@ jobs:
           CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-        uses: cognitedata/code-sign-action/@v1.271
+        uses: cognitedata/code-sign-action/@v1.272
         with:
-          path-to-binary: 'files\wmp.dll'
+          path-to-binary: 'files\test.dll'
 
-      # - name: Run the action for all binaries under a folder
-      #   env:
-      #     CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-      #     CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-      #     CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-      #     CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-      #     CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-      #   uses: cognitedata/code-sign-action/@v1.267
-      #   with:
-      #     path-to-binary: "files"
-      #     options: "-Recurse"
+      - name: Run the action for a single binary
+        env:
+          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
+          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1.272
+        with:
+          path-to-binary: 'files'
+
 
   run-action-linux:
     runs-on: ubuntu-20.04
@@ -56,18 +59,18 @@ jobs:
           CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-        uses: cognitedata/code-sign-action/@v1.271
+        uses: cognitedata/code-sign-action/@v1.272
         with:
-          path-to-binary: "test.dll"
+          path-to-binary: "test/test.dll"
 
-      # - name: Run the action for all binaries under a folder
-      #   env:
-      #     CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-      #     CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-      #     CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-      #     CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-      #     CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-      #   uses: cognitedata/code-sign-action/@v1.267
-      #   with:
-      #     path-to-binary: 'files'
-      #     options: '-Recurse'
+      - name: Run the action for a single binary
+        env:
+          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
+          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v1.272
+        with:
+          path-to-binary: "test"
+
