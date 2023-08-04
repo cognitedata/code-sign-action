@@ -51,20 +51,26 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
+        smctl windows certsync --keypair-alias="key_464138416"
         file_path="${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
-          if [ "${{ runner.os }}" == "Windows" ]
-          then
-            smctl windows certsync --keypair-alias="key_464138416"
-            smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "${{ env.GITHUB_WORKSPACE }}\$f"
-            smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\$f"
-          elif [ "${{ runner.os }}" == "Linux" ]
-          then        
-            curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
-            sudo dpkg --install jsign_3.1_all.deb
-            smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "${{ env.GITHUB_WORKSPACE }}/$f"
-          fi
+          smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "$f"
+          smctl sign verify --input "${{ env.GITHUB_WORKSPACE }}\$f"
         done
       if: runner.os == 'Windows'
+      shell: bash
+
+
+    - name: Sign with smctl
+      env:
+      run: |
+        curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
+        sudo dpkg --install jsign_3.1_all.deb
+        file_path="${{ inputs.path-to-binary }}"
+        for f in $(find $file_path -type f); do
+          echo $f
+          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
+        done
+      if: runner.os == 'Linux'
       shell: bash
