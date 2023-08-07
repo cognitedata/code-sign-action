@@ -4,9 +4,6 @@ inputs:
   path-to-binary:
     description: "The folder that contains the files to sign"
     required: true
-  options:
-    description: 'Use "-Recurse" to recursively search for files'
-    required: false
 runs:
   using: "composite"
   steps:
