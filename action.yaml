@@ -59,12 +59,12 @@ runs:
         }
         else {
           Get-ChildItem -Path $file_path -File -Recurse
-          $files_to_sign = @(Get-ChildItem -Path $file_path -File -Recurse | Select-Object FullName)
+          $files_to_sign = @(Get-ChildItem -Path $file_path -File -Recurse)
         }        
         foreach ( $f in $files_to_sign )
         {
-          smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input $f
-          smctl sign verify --input $f
+          smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input $f.FullName
+          smctl sign verify --input $f.FullName
         }
       if: runner.os == 'Windows'
       shell: powershell
