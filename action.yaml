@@ -57,8 +57,9 @@ runs:
         if (Test-Path -Path $file_path -PathType Leaf) {
           $files_to_sign = @($file_path)
         }
-        else {          
-          $files_to_sign = @(Get-ChildItem -Path $file_path -File -Recurse)
+        else {
+          Get-ChildItem -Path $file_path -File -Recurse
+          $files_to_sign = @(Get-ChildItem -Path $file_path -File -Recurse | Select-Object FullName)
         }        
         foreach ( $f in $files_to_sign )
         {
