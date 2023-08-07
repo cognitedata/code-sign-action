@@ -52,7 +52,7 @@ runs:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
         smctl windows certsync --keypair-alias="key_464138416"
-        file_path="${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
+        $file_path = "${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
         if (Test-Path -Path $file_path -PathType Leaf) {
           smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input "$f"
           smctl sign verify --input "$f"
