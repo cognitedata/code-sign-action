@@ -16,7 +16,7 @@ This Action integrates with Digicert One and uses SignTool on Windows runners an
 
 ### Inputs
 
-- `path-to-binary`: takes either a file path or a directory path containing the files to be signed.
+- `path-to-binary`: Takes either a file path or a directory path containing the files to be signed.
 
 ### Examples
 
@@ -34,7 +34,7 @@ jobs:
   run-action:
     runs-on: windows-2022
     steps:
-      - name: Run the action for a single binary
+      - name: Run the action for a single file
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -49,7 +49,7 @@ jobs:
 #### Sign multiple files on Linux
 
 ```yaml
-name: codesign-example-single-file
+name: codesign-example-multiple-files
 on:
   pull_request:
   push:
@@ -64,7 +64,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run the action for a single binary
+      - name: Run the action for multiple files in directory
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -74,6 +74,5 @@ jobs:
         uses: cognitedata/code-sign-action/@v2
         with:
           path-to-binary: "test"
-
 ```
 
