@@ -8,16 +8,16 @@ on:
 
 # Run this action only once on a single runner. Multiple consecutive runs on the same runner could cause issues.
 jobs:
-  run-action-linux:
-    runs-on: ubuntu-22.04
+  run-action:
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Certificate Linux
+      - name: Setup Certificate Windows
         run: |
-          echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
-        if: runner.os == 'Linux'
+          echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+        if: runner.os == 'Windows'
         shell: bash
 
       - name: Set variables
@@ -45,8 +45,11 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
 
-      - name: Sign with smctl Linux
+      - name: Sign with smctl
         run: |
-          smctl -csp "DigiCert Software Trust Manager KSP" -key -user
-        if: runner.os == 'Linux'
+          smksp_registrar.exe register
+          certutil.exe -csp "DigiCert Software Trust Manager KSP" -key -user
+          smksp_cert_sync.exe
+          certmgr.msc
+        if: runner.os == 'Windows'
         shell: bash
