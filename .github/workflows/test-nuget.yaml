@@ -9,7 +9,7 @@ on:
 # Run this action only once on a single runner. Multiple consecutive runs on the same runner could cause issues.
 jobs:
   run-action:
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
