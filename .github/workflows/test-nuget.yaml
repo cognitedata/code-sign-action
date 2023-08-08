@@ -63,7 +63,7 @@ jobs:
       - name: Sign with smctl Linux
         run: |
           curl -o nuget-package.nupkg https://globalcdn.nuget.org/packages/microsoft.bcl.asyncinterfaces.8.0.0-preview.6.23329.7.nupkg
-          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input nuget-package.nupkg
+          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input nuget-package.nupkg
           smctl sign verify --input nuget-package.nupkg
         if: runner.os == 'Linux'
         shell: bash
