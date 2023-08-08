@@ -47,9 +47,9 @@ jobs:
 
       - name: Sign with smctl
         run: |
-          smksp_registrar.exe register
-          certutil.exe -csp "DigiCert Software Trust Manager KSP" -key -user
-          smksp_cert_sync.exe
-          certmgr.msc
+          curl -o nuget-package.nupkg https://globalcdn.nuget.org/packages/microsoft.bcl.asyncinterfaces.8.0.0-preview.6.23329.7.nupkg
+          smctl windows certsync --keypair-alias="key_464138416"
+          smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input nuget-package.nupkg
+          smctl sign verify --input nuget-package.nupkg
         if: runner.os == 'Windows'
         shell: bash
