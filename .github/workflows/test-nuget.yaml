@@ -16,8 +16,14 @@ jobs:
 
       - name: Setup Certificate Windows
         run: |
-          echo "${{secrets.CODE_SIGNING_CLIENT_CERT }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+          echo "${{ secrets.CODE_SIGNING_CLIENT_CERT }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
         if: runner.os == 'Windows'
+        shell: bash
+
+      - name: Setup Certificate Linux
+        run: |
+          echo "${{ secrets.CODE_SIGNING_CLIENT_CERT }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
+        if: runner.os == 'Linux'
         shell: bash
 
       - name: Set variables
@@ -45,11 +51,19 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
           SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
 
-      - name: Sign with smctl
+      - name: Sign with smctl windows
         run: |
           curl -o nuget-package.nupkg https://globalcdn.nuget.org/packages/microsoft.bcl.asyncinterfaces.8.0.0-preview.6.23329.7.nupkg
           smctl windows certsync --keypair-alias="key_464138416"
           smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input nuget-package.nupkg
           smctl sign verify --input nuget-package.nupkg
         if: runner.os == 'Windows'
+        shell: bash
+
+      - name: Sign with smctl Linux
+        run: |
+          curl -o nuget-package.nupkg https://globalcdn.nuget.org/packages/microsoft.bcl.asyncinterfaces.8.0.0-preview.6.23329.7.nupkg
+          smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input nuget-package.nupkg
+          smctl sign verify --input nuget-package.nupkg
+        if: runner.os == 'Linux'
         shell: bash
