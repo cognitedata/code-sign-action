@@ -16,17 +16,17 @@ jobs:
 
       - name: Setup Certificate Windows
         run: |
-          echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
+          echo "${{secrets.CODE_SIGNING_CLIENT_CERT }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
         if: runner.os == 'Windows'
         shell: bash
 
       - name: Set variables
         id: variables
         run: |
-          echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
-          echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
-          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
+          echo "SM_HOST=${{ secrets.CODE_SIGNING_CERT_HOST }}" >> "$GITHUB_ENV"
+          echo "SM_API_KEY=${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
           if [ "${{ runner.os }}" == "Windows" ]
           then
             echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
