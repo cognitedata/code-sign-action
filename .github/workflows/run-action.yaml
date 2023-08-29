@@ -1,5 +1,6 @@
 name: run-action
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -9,7 +10,6 @@ on:
 jobs:
   run-action:
     runs-on: windows-2022
-    environment: CD
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,21 +25,19 @@ jobs:
         with:
           path-to-binary: 'test\test.dll'
 
-#      - name: Run the action for multiple binaries in a directory
-#        env:
-#          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-#          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-#          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-#          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-#          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-#        uses: cognitedata/code-sign-action/@v2
-#        with:
-#          path-to-binary: 'test'
-
+      - name: Run the action for multiple binaries in a directory
+        env:
+          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
+          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v2
+        with:
+          path-to-binary: 'test\test.dll'
 
   run-action-linux:
     runs-on: ubuntu-22.04
-    environment: CD
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -55,13 +53,13 @@ jobs:
         with:
           path-to-binary: "test/test.dll"
 
-#      - name: Run the action for multiple binaries in a directory
-#        env:
-#          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-#          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-#          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-#          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-#          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-#        uses: cognitedata/code-sign-action/@v2
-#        with:
-#          path-to-binary: "test"
+      - name: Run the action for multiple binaries in a directory
+        env:
+          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
+          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+        uses: cognitedata/code-sign-action/@v2
+        with:
+          path-to-binary: "test/test.dll"

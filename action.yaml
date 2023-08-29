@@ -10,13 +10,13 @@ runs:
     - name: Setup Certificate Windows
       run: |
         echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && ${{ env.DEPS_INSTALLED }} != "TRUE"
       shell: bash
 
     - name: Setup Certificate Linux
       run: |
         echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && ${{ env.DEPS_INSTALLED }} != "TRUE"
       shell: bash
 
     - name: Set variables
@@ -36,6 +36,7 @@ runs:
           echo "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64" >> $GITHUB_PATH
         fi
       shell: bash
+      if: ${{ env.DEPS_INSTALLED }} != "TRUE"
 
     - name: Code signing with Secure Software Manager
       uses: digicert/ssm-code-signing@v0.0.2
@@ -43,6 +44,7 @@ runs:
         SM_API_KEY: ${{ env.SM_API_KEY }}
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
         SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
+      if: ${{ env.DEPS_INSTALLED }} != "TRUE"
 
     - name: Sign with smctl Windows
       env:
@@ -66,15 +68,25 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
 
-
     - name: Sign with smctl Linux
       run: |
-        curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
-        sudo dpkg --install jsign_3.1_all.deb
+        if [ "${{ env.DEPS_INSTALLED }}" != "TRUE" ]
+        then
+          curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
+          sudo dpkg --install jsign_3.1_all.deb
+        fi
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
           smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
         done
       if: runner.os == 'Linux'
+      shell: bash
+
+    - name: Set dependency envar
+      id: dep-var
+      run: |
+        echo ${{ env.DEPS_INSTALLED }}
+        echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
+        echo ${{ env.DEPS_INSTALLED }}
       shell: bash
