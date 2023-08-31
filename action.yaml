@@ -70,7 +70,7 @@ runs:
 
     - name: Sign with smctl Linux
       run: |
-        if [ "${{ env.DEPS_INSTALLED }}" != "TRUE" ]
+        if [ ${{ env.DEPS_INSTALLED }} != "TRUE" ]
         then
           curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
           sudo dpkg --install jsign_3.1_all.deb
@@ -86,7 +86,7 @@ runs:
     - name: Set dependency envar
       id: dep-var
       run: |
-        echo ${{ env.DEPS_INSTALLED }}
+        echo "${{ env.DEPS_INSTALLED }}"
         echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
-        echo ${{ env.DEPS_INSTALLED }}
+        echo "${{ env.DEPS_INSTALLED }}"
       shell: bash
