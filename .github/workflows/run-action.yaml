@@ -24,7 +24,7 @@ jobs:
         with:
           path-to-binary: 'test\test.dll'
 
-      - name: Second run
+      - name: Second run for multiple binaries in a directory
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -33,7 +33,7 @@ jobs:
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
         uses: cognitedata/code-sign-action/@v3.5
         with:
-          path-to-binary: 'test\test.dll'
+          path-to-binary: "test"
 
   run-action-linux:
     runs-on: ubuntu-22.04
@@ -52,7 +52,7 @@ jobs:
         with:
           path-to-binary: "test/test.dll"
 
-      - name: Second run
+      - name: Run the action for multiple binaries in a directory
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -61,4 +61,4 @@ jobs:
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
         uses: cognitedata/code-sign-action/@v3.5
         with:
-          path-to-binary: "test/test.dll"
+          path-to-binary: "test"
