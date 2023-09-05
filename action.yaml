@@ -1,5 +1,5 @@
-name: "Sign binary"
-description: "Sign a binary using a code signing certificate"
+name: "Sign file"
+description: "Sign a file using a code signing certificate"
 inputs:
   path-to-binary:
     description: "The folder that contains the files to sign"
@@ -19,7 +19,7 @@ runs:
       if: ${{ runner.os == 'Linux' && (!contains(env.DEPS_INSTALLED, 'TRUE')) }}
       shell: bash
 
-    - name: Set variables
+    - name: Set required variables
       id: variables
       run: |
         echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
@@ -38,7 +38,7 @@ runs:
       if: ${{ !contains(env.DEPS_INSTALLED, 'TRUE') }}
       shell: bash
 
-    - name: Code signing with Secure Software Manager
+    - name: Configure Digicert Secure Software Manager
       uses: digicert/ssm-code-signing@v0.0.2
       env:
         SM_API_KEY: ${{ env.SM_API_KEY }}
@@ -68,7 +68,7 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
 
-    - name: Install Jsign for Linux
+    - name: Install Jsign for Linux signing
       run: |
         curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
         sudo dpkg --install jsign_3.1_all.deb
