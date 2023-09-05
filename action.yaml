@@ -68,11 +68,6 @@ runs:
 
     - name: Sign with smctl Linux
       run: |
-#        if [ "${{ env.DEPS_INSTALLED }}" != "TRUE" ]
-#        then
-#          curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
-#          sudo dpkg --install jsign_3.1_all.deb
-#        fi
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
