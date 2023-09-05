@@ -36,7 +36,6 @@ runs:
           echo "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64" >> $GITHUB_PATH
         fi
       shell: bash
-#      if: ${{ env.DEPS_INSTALLED }} != "TRUE"
 
     - name: Code signing with Secure Software Manager
       uses: digicert/ssm-code-signing@v0.0.2
@@ -44,7 +43,6 @@ runs:
         SM_API_KEY: ${{ env.SM_API_KEY }}
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
         SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
-      if: ${{ env.DEPS_INSTALLED }} != "TRUE"
 
     - name: Sign with smctl Windows
       env:
@@ -70,11 +68,11 @@ runs:
 
     - name: Sign with smctl Linux
       run: |
-        if [ ${{ env.DEPS_INSTALLED }} != "TRUE" ]
-        then
-          curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
-          sudo dpkg --install jsign_3.1_all.deb
-        fi
+#        if [ "${{ env.DEPS_INSTALLED }}" != "TRUE" ]
+#        then
+#          curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
+#          sudo dpkg --install jsign_3.1_all.deb
+#        fi
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
@@ -83,10 +81,10 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
 
-    - name: Set dependency envar
-      id: dep-var
-      run: |
-        echo "${{ env.DEPS_INSTALLED }}"
-        echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
-        echo "${{ env.DEPS_INSTALLED }}"
-      shell: bash
+#    - name: Set dependency envar
+#      id: dep-var
+#      run: |
+#        echo "$DEPS_INSTALLED"
+#        echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
+#        echo "$DEPS_INSTALLED"
+#      shell: bash
