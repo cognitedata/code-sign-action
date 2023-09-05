@@ -9,7 +9,6 @@ on:
 jobs:
   run-action:
     runs-on: windows-2022
-    environment: CD
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,7 +37,6 @@ jobs:
 
   run-action-linux:
     runs-on: ubuntu-22.04
-    environment: CD
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
