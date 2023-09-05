@@ -43,6 +43,7 @@ runs:
         SM_API_KEY: ${{ env.SM_API_KEY }}
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
         SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
+      if: ${{ !contains(env.DEPS_INSTALLED, 'TRUE') }}
 
     - name: Sign with smctl Windows
       env:
@@ -66,7 +67,6 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
 
-
     - name: Sign with smctl Linux
       run: |
         curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
@@ -77,4 +77,12 @@ runs:
           smctl sign -v --keypair-alias="key_464138416" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
         done
       if: runner.os == 'Linux'
+      shell: bash
+
+    - name: Set dependency envar
+      id: dep-var
+      run: |
+        echo "${{ env.DEPS_INSTALLED }}"
+        echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
+        echo "${{ env.DEPS_INSTALLED }}"
       shell: bash
