@@ -35,6 +35,7 @@ runs:
           echo "PKCS11_CONFIG=/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" >> "$GITHUB_ENV"
           echo "/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64" >> $GITHUB_PATH
         fi
+      if: ${{ !contains(env.DEPS_INSTALLED, 'TRUE') }}
       shell: bash
 
     - name: Code signing with Secure Software Manager
@@ -67,10 +68,15 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
 
-    - name: Sign with smctl Linux
+    - name: Install Jsign for Linux
       run: |
         curl -fSslL https://github.com/ebourg/jsign/releases/download/3.1/jsign_3.1_all.deb -o jsign_3.1_all.deb
         sudo dpkg --install jsign_3.1_all.deb
+      if: ${{ runner.os == 'Linux' && (!contains(env.DEPS_INSTALLED, 'TRUE')) }}
+      shell: bash
+
+    - name: Sign with smctl Linux
+      run: |
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
@@ -83,4 +89,5 @@ runs:
       id: dependency-variable
       run: |
         echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
+      if: ${{ !contains(env.DEPS_INSTALLED, 'TRUE') }}
       shell: bash
