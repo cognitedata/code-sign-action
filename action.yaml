@@ -10,13 +10,13 @@ runs:
     - name: Setup Certificate Windows
       run: |
         echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode > /d/cognite_code_signing_github_actions.p12
-      if: runner.os == 'Windows'
+      if: ${{ runner.os == 'Windows' && (!contains(env.DEPS_INSTALLED, 'TRUE')) }}
       shell: bash
 
     - name: Setup Certificate Linux
       run: |
         echo "${{env.CLIENT_CERTIFICATE }}" | base64 --decode | sudo install -D /dev/stdin /d/cognite_code_signing_github_actions.p12
-      if: runner.os == 'Linux'
+      if: ${{ runner.os == 'Linux' && (!contains(env.DEPS_INSTALLED, 'TRUE')) }}
       shell: bash
 
     - name: Set variables
@@ -79,10 +79,8 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
 
-    - name: Set dependency envar
-      id: dep-var
+    - name: Mark dependencies as installed
+      id: dependency-variable
       run: |
-        echo "${{ env.DEPS_INSTALLED }}"
         echo "DEPS_INSTALLED=TRUE" >> "$GITHUB_ENV"
-        echo "${{ env.DEPS_INSTALLED }}"
       shell: bash
