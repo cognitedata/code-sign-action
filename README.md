@@ -13,6 +13,7 @@ The code-sign-action action integrates with Digicert One and uses SignTool on Wi
 - `CERTIFICATE_SHA1_HASH`: SHA1 fingerprint of the code signing certificate.
 - `CLIENT_CERTIFICATE`: Client authentication certificate created for the GitHub Actions service user in Digicert One.(.p12 file)
 - `CLIENT_CERTIFICATE_PASSWORD`: Client authentication certificate password created for the GitHub Actions service user in Digicert One.
+- `KEYPAIR_ALIAS`: Keypair alias value found in the "Keypair details" section of the "Certificates" page in your KeyLocker dashboard.
 
 ### Inputs
 
@@ -41,6 +42,7 @@ jobs:
           CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+          KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: cognitedata/code-sign-action/@v2
         with:
           path-to-binary: 'test\test.dll'
@@ -71,6 +73,7 @@ jobs:
           CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+          KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: cognitedata/code-sign-action/@v2
         with:
           path-to-binary: "test"
