@@ -26,6 +26,7 @@ runs:
         echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
         echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
         echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
+        echo "SM_KEYPAIR_ALIAS=${{ env.KEYPAIR_ALIAS }}" >> "$GITHUB_ENV"
         if [ "${{ runner.os }}" == "Windows" ]
         then
           echo "SM_CLIENT_CERT_FILE=D:\\cognite_code_signing_github_actions.p12" >> "$GITHUB_ENV"
@@ -50,7 +51,7 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
-        smctl windows certsync --keypair-alias="${{ env.KEYPAIR_ALIAS }}"
+        smctl windows certsync --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}"
         $file_path = "${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
         $files_to_sign = @()
         if (Test-Path -Path $file_path -PathType Leaf) {
@@ -80,7 +81,7 @@ runs:
         file_path="${{ inputs.path-to-binary }}"
         for f in $(find $file_path -type f); do
           echo $f
-          smctl sign -v --keypair-alias="${{ env.KEYPAIR_ALIAS }}" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
+          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
         done
       if: runner.os == 'Linux'
       shell: bash
