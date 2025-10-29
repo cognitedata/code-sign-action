@@ -40,7 +40,7 @@ runs:
       shell: bash
 
     - name: Configure Digicert Secure Software Manager
-      uses: digicert/ssm-code-signing@v0.0.2
+      uses: digicert/ssm-code-signing@v1.1.1
       env:
         SM_API_KEY: ${{ env.SM_API_KEY }}
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
