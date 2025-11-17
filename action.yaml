@@ -79,8 +79,8 @@ runs:
     - name: Sign with smctl Linux
       run: |
         file_path="${{ inputs.path-to-binary }}"
-        for f in $(find $file_path -type f); do
-          echo $f
+        find "$file_path" -type f -print0 | while IFS= read -r -d '' f; do
+          echo "$f"
           smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --input "$f"
         done
       if: runner.os == 'Linux'
