@@ -63,8 +63,8 @@ runs:
         }        
         foreach ( $f in $files_to_sign )
         {
-          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input $f.FullName
-          smctl sign verify --input $f.FullName
+          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
+          smctl sign verify --input "$($f.FullName)"
         }
       if: runner.os == 'Windows'
       shell: powershell
