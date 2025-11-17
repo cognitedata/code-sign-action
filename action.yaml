@@ -25,7 +25,6 @@ runs:
         echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
         echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
         echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
-        echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
         echo "SM_KEYPAIR_ALIAS=${{ env.KEYPAIR_ALIAS }}" >> "$GITHUB_ENV"
         if [ "${{ runner.os }}" == "Windows" ]
         then
@@ -40,7 +39,7 @@ runs:
       shell: bash
 
     - name: Configure Digicert Secure Software Manager
-      uses: digicert/ssm-code-signing@v1.1.1
+      uses: digicert/ssm-code-signing@fb61e357690ad6aaa11c372000c37fb74d35c000 # v1.1.1
       env:
         FORCE_DOWNLOAD_TOOLS: 'true' 
         SM_API_KEY: ${{ env.SM_API_KEY }}
