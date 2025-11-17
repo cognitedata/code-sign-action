@@ -6,39 +6,11 @@ on:
       - "release-*"
 
 jobs:
-  run-action-windows-2025:
-    runs-on: windows-2025
-    environment: CD
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Sign single file
-        env:
-          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-          KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
-        uses: cognitedata/code-sign-action/@v3
-        with:
-          path-to-binary: 'test\test.dll'
-
-      - name: Sign multiple files in a directory
-        env:
-          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
-          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
-          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
-          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
-          KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
-        uses: cognitedata/code-sign-action/@v3
-        with:
-          path-to-binary: "test"
-
-  run-action-windows-2022:
-    runs-on: windows-2022
+  run-action-windows:
+    strategy:
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
     environment: CD
     steps:
       - name: Checkout code
