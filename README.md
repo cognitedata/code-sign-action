@@ -1,6 +1,10 @@
 # code-sign-action
 
-The code-sign-action action integrates with Digicert One and uses SignTool on Windows runners and JSign on Linux runners. It has been tested on `windows-2022`, `ubuntu-20.04` and `ubuntu-22.04` runners.
+The code-sign-action action integrates with Digicert One and uses SignTool on Windows runners and JSign on Linux runners. The code-sign-action has been tested on the following GitHub runners:
+  - windows-2025
+  - windows-2022
+  - ubuntu-22.04
+  - ubuntu-20.04
 
 ------------
 
