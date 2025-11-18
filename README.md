@@ -1,6 +1,10 @@
 # code-sign-action
 
-The code-sign-action action integrates with Digicert One and uses SignTool on Windows runners and JSign on Linux runners. It has been tested on `windows-2022`, `ubuntu-20.04` and `ubuntu-22.04` runners.
+The code-sign-action action integrates with Digicert One and uses SignTool on Windows runners and JSign on Linux runners. The code-sign-action has been tested on the following GitHub runners:
+  - windows-2025
+  - windows-2022
+  - ubuntu-22.04
+  - ubuntu-20.04
 
 ------------
 
@@ -10,7 +14,6 @@ The code-sign-action action integrates with Digicert One and uses SignTool on Wi
 
 - `CERTIFICATE_HOST`: https://clientauth.one.digicert.com
 - `CERTIFICATE_HOST_API_KEY`: An API key created for the GitHub Actions service user in Digicert One.
-- `CERTIFICATE_SHA1_HASH`: SHA1 fingerprint of the code signing certificate.
 - `CLIENT_CERTIFICATE`: Client authentication certificate created for the GitHub Actions service user in Digicert One.(.p12 file)
 - `CLIENT_CERTIFICATE_PASSWORD`: Client authentication certificate password created for the GitHub Actions service user in Digicert One.
 - `KEYPAIR_ALIAS`: Keypair alias value found in the "Keypair details" section of the "Certificates" page in your KeyLocker dashboard.
@@ -39,7 +42,6 @@ jobs:
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
@@ -70,7 +72,6 @@ jobs:
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
-          CERTIFICATE_SHA1_HASH: ${{ secrets.CODE_SIGNING_CERT_SHA1_HASH }}
           CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
           CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}

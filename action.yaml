@@ -25,7 +25,6 @@ runs:
         echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
         echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
         echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
-        echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ env.CERTIFICATE_SHA1_HASH }}" >> "$GITHUB_ENV"
         echo "SM_KEYPAIR_ALIAS=${{ env.KEYPAIR_ALIAS }}" >> "$GITHUB_ENV"
         if [ "${{ runner.os }}" == "Windows" ]
         then
@@ -40,8 +39,9 @@ runs:
       shell: bash
 
     - name: Configure Digicert Secure Software Manager
-      uses: digicert/ssm-code-signing@v0.0.2
+      uses: digicert/ssm-code-signing@fb61e357690ad6aaa11c372000c37fb74d35c000 # v1.1.1
       env:
+        FORCE_DOWNLOAD_TOOLS: 'true' 
         SM_API_KEY: ${{ env.SM_API_KEY }}
         SM_CLIENT_CERT_PASSWORD: ${{ env.SM_CLIENT_CERT_PASSWORD }}
         SM_CLIENT_CERT_FILE: ${{ env.SM_CLIENT_CERT_FILE }}
@@ -63,8 +63,8 @@ runs:
         }        
         foreach ( $f in $files_to_sign )
         {
-          smctl sign --fingerprint ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} --input $f.FullName
-          smctl sign verify --input $f.FullName
+          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
+          smctl sign verify --input "$($f.FullName)"
         }
       if: runner.os == 'Windows'
       shell: powershell
@@ -79,9 +79,9 @@ runs:
     - name: Sign with smctl Linux
       run: |
         file_path="${{ inputs.path-to-binary }}"
-        for f in $(find $file_path -type f); do
-          echo $f
-          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --fingerprint "${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}" --input "$f"
+        find "$file_path" -type f -print0 | while IFS= read -r -d '' f; do
+          echo "$f"
+          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --config-file="/tmp/DigiCert One Signing Manager Tools/smtools-linux-x64/pkcs11properties.cfg" --input "$f"
         done
       if: runner.os == 'Linux'
       shell: bash
