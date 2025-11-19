@@ -14,9 +14,21 @@ jobs:
     environment: CD
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Sign single file
+      - name: Sign Nuget package
+        env:
+          CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
+          CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
+          CERTIFICATE_FINGERPRINT: ${{ secrets.CODE_SIGNING_CERT_SHA256_HASH }}
+          CLIENT_CERTIFICATE: ${{ secrets.CODE_SIGNING_CLIENT_CERT }}
+          CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGNING_CLIENT_CERT_PASSWORD }}
+          KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
+        uses: ./
+        with:
+          path-to-binary: "test/nuget/test_nuget.nupkg"
+
+      - name: Sign single executable
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -25,7 +37,7 @@ jobs:
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: ./
         with:
-          path-to-binary: 'test\test.dll'
+          path-to-binary: "test/other/test.dll"
 
       - name: Sign multiple files in a directory
         env:
@@ -36,7 +48,7 @@ jobs:
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: ./
         with:
-          path-to-binary: "test"
+          path-to-binary: "test/other"
 
   run-action-linux:
     runs-on: ubuntu-22.04
@@ -45,7 +57,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Sign single file
+      - name: Sign single executable
         env:
           CERTIFICATE_HOST: ${{ secrets.CODE_SIGNING_CERT_HOST }}
           CERTIFICATE_HOST_API_KEY: ${{ secrets.CODE_SIGNING_CERT_HOST_API_KEY }}
@@ -54,7 +66,7 @@ jobs:
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: ./
         with:
-          path-to-binary: "test/test.dll"
+          path-to-binary: "test/other/test.dll"
 
       - name: Sign multiple files in a directory
         env:
@@ -65,4 +77,4 @@ jobs:
           KEYPAIR_ALIAS: ${{ secrets.CODE_SIGNING_KEYPAIR_ALIAS }}
         uses: ./
         with:
-          path-to-binary: "test"
+          path-to-binary: "test/other"
