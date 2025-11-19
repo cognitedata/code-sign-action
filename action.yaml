@@ -52,7 +52,12 @@ runs:
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
+        $ErrorActionPreference = 'Stop'
         smctl windows certsync --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Error: certsync failed with exit code $LASTEXITCODE"
+          exit $LASTEXITCODE
+        }
         $file_path = "${{ env.GITHUB_WORKSPACE }}\${{ inputs.path-to-binary }}"
         $files_to_sign = @()
         if (Test-Path -Path $file_path -PathType Leaf) {
@@ -64,13 +69,30 @@ runs:
         }
         foreach ( $f in $files_to_sign )
         {
-          Write-Host "Processing file: $($f.FullName)"
+          # check if the file is a Nuget package
           if ($f.FullName -match '\.nupkg$') {
-            smctl sign -v --fingerprint ${{ env.SM_CODE_SIGNING_CERT_FINGERPRINT }} --input "$($f.FullName)"
+            if (-not [string]::IsNullOrWhiteSpace("${{ env.SM_CODE_SIGNING_CERT_FINGERPRINT }}")) {
+              smctl sign -v --fingerprint "${{ env.SM_CODE_SIGNING_CERT_FINGERPRINT }}" --input "$($f.FullName)"
+            } else {
+              Write-Error "SM_CODE_SIGNING_CERT_FINGERPRINT is not set or is empty. Cannot sign .nupkg file: $($f.FullName)"
+              exit 1
+            }
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Error: Failed to sign $($f.FullName) with exit code $LASTEXITCODE"
+              exit $LASTEXITCODE
+            }
           } else {
             smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Error: Failed to sign $($f.FullName) with exit code $LASTEXITCODE"
+              exit $LASTEXITCODE
+            }
           }
           smctl sign verify --input "$($f.FullName)"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error: Failed to verify $($f.FullName) with exit code $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
         }
       if: runner.os == 'Windows'
       shell: powershell
