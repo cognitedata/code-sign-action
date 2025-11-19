@@ -25,6 +25,7 @@ runs:
         echo "SM_HOST=${{ env.CERTIFICATE_HOST }}" >> "$GITHUB_ENV"
         echo "SM_API_KEY=${{ env.CERTIFICATE_HOST_API_KEY }}" >> "$GITHUB_ENV"
         echo "SM_CLIENT_CERT_PASSWORD=${{ env.CLIENT_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
+        echo "SM_CODE_SIGNING_CERT_FINGERPRINT=${{ env.CERTIFICATE_FINGERPRINT }}" >> "$GITHUB_ENV"
         echo "SM_KEYPAIR_ALIAS=${{ env.KEYPAIR_ALIAS }}" >> "$GITHUB_ENV"
         if [ "${{ runner.os }}" == "Windows" ]
         then
@@ -60,10 +61,15 @@ runs:
         else {
           Get-ChildItem -Path $file_path -File -Recurse
           $files_to_sign = @(Get-ChildItem -Path $file_path -File -Recurse)
-        }        
+        }
         foreach ( $f in $files_to_sign )
         {
-          smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
+          Write-Host "Processing file: $($f.FullName)"
+          if ($f.FullName -match '\.nupkg$') {
+            smctl sign -v --fingerprint ${{ env.SM_CODE_SIGNING_CERT_FINGERPRINT }} --input "$($f.FullName)"
+          } else {
+            smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
+          }
           smctl sign verify --input "$($f.FullName)"
         }
       if: runner.os == 'Windows'
