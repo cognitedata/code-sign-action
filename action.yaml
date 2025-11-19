@@ -77,16 +77,12 @@ runs:
               Write-Error "SM_CODE_SIGNING_CERT_FINGERPRINT is not set or is empty. Cannot sign .nupkg file: $($f.FullName)"
               exit 1
             }
-            if ($LASTEXITCODE -ne 0) {
-              Write-Error "Error: Failed to sign $($f.FullName) with exit code $LASTEXITCODE"
-              exit $LASTEXITCODE
-            }
           } else {
             smctl sign -v --keypair-alias="${{ env.SM_KEYPAIR_ALIAS }}" --input "$($f.FullName)"
-            if ($LASTEXITCODE -ne 0) {
-              Write-Error "Error: Failed to sign $($f.FullName) with exit code $LASTEXITCODE"
-              exit $LASTEXITCODE
-            }
+          }
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Error: Failed to sign $($f.FullName) with exit code $LASTEXITCODE"
+            exit $LASTEXITCODE
           }
           smctl sign verify --input "$($f.FullName)"
           if ($LASTEXITCODE -ne 0) {
