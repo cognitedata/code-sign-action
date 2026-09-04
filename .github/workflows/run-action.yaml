@@ -55,7 +55,7 @@ jobs:
     environment: CD
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
 
       - name: Sign single executable
         env:
